@@ -8,7 +8,7 @@ public class MalContext : DbContext {
     public DbSet<UserSerie> UserSeries { get; set; }
     public string DbPath { get; }
     public MalContext() {
-        DbPath = "mal.db";
+        DbPath = Path.Join(Environment.CurrentDirectory, "..\\MLRecommendator.Api\\mal.db");
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>

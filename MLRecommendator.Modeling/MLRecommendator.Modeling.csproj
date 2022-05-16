@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ML" Version="1.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MLRecommendator.Database\MLRecommendator.Database.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace MLRecommendator.Database.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,7 +15,7 @@ namespace MLRecommendator.Database.Migrations
                     Id = table.Column<uint>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
-                    Mean = table.Column<double>(type: "REAL", nullable: false),
+                    Mean = table.Column<float>(type: "REAL", nullable: false),
                     Rank = table.Column<uint>(type: "INTEGER", nullable: false),
                     Popularity = table.Column<uint>(type: "INTEGER", nullable: false),
                     UsersNumber = table.Column<uint>(type: "INTEGER", nullable: false),
@@ -24,13 +23,30 @@ namespace MLRecommendator.Database.Migrations
                     Nsfw = table.Column<string>(type: "TEXT", nullable: true),
                     Genres = table.Column<string>(type: "TEXT", nullable: true),
                     EpisodeNumber = table.Column<ushort>(type: "INTEGER", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     Status = table.Column<string>(type: "TEXT", nullable: true),
                     Studios = table.Column<string>(type: "TEXT", nullable: true),
                     Source = table.Column<string>(type: "TEXT", nullable: true),
                     AverageEpisodeDuration = table.Column<ushort>(type: "INTEGER", nullable: false),
-                    Rating = table.Column<string>(type: "TEXT", nullable: true)
+                    Rating = table.Column<string>(type: "TEXT", nullable: true),
+                    Action = table.Column<float>(type: "REAL", nullable: false),
+                    Adventure = table.Column<float>(type: "REAL", nullable: false),
+                    AdultCast = table.Column<float>(type: "REAL", nullable: false),
+                    SciFi = table.Column<float>(type: "REAL", nullable: false),
+                    Space = table.Column<float>(type: "REAL", nullable: false),
+                    Comedy = table.Column<float>(type: "REAL", nullable: false),
+                    Drama = table.Column<float>(type: "REAL", nullable: false),
+                    Shounen = table.Column<float>(type: "REAL", nullable: false),
+                    Mystery = table.Column<float>(type: "REAL", nullable: false),
+                    Psychological = table.Column<float>(type: "REAL", nullable: false),
+                    Seinen = table.Column<float>(type: "REAL", nullable: false),
+                    Fantasy = table.Column<float>(type: "REAL", nullable: false),
+                    Romance = table.Column<float>(type: "REAL", nullable: false),
+                    Military = table.Column<float>(type: "REAL", nullable: false),
+                    Ecchi = table.Column<float>(type: "REAL", nullable: false),
+                    SliceOfLife = table.Column<float>(type: "REAL", nullable: false),
+                    School = table.Column<float>(type: "REAL", nullable: false),
+                    Historical = table.Column<float>(type: "REAL", nullable: false),
+                    Isekai = table.Column<float>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
                 {

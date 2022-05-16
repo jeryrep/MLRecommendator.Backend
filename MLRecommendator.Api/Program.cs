@@ -1,4 +1,5 @@
 using MLRecommendator.Database;
+using MLRecommendator.Modeling;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MalContext>();
+builder.Services.AddScoped<MlService>();
 
 var app = builder.Build();
 

@@ -24,13 +24,14 @@ public class MalController : ControllerBase {
     // GET: api/Mal
     [HttpGet]
     public async Task<ActionResult> Get() {
-        var message = await _client.GetAsync("anime/ranking?ranking_type=all&limit=500&fields=id,title,start_date,end_date,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,status,genres,num_episodes,source,average_episode_duration,rating,studios");
+        var message = await _client.GetAsync("anime/ranking?ranking_type=all&limit=500&fields=id,title,start_date,end_date,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,status,genres,num_episodes,source,average_episode_duration,rating,studios&offset=4000");
         if (!message.IsSuccessStatusCode) return BadRequest();
         var content = await message.Content.ReadAsStringAsync();
         dynamic json = JsonConvert.DeserializeObject(content)!;
         var data = json.data;
         foreach (var node in data) {
             var anime = node.node;
+            if (anime.genres == null) continue;
             var series = new Anime {
                 Id = anime.id,
                 Title = anime.title,
@@ -41,8 +42,8 @@ public class MalController : ControllerBase {
                 UsersScoringNumber = anime.num_scoring_users,
                 Nsfw = anime.nsfw,
                 EpisodeNumber = anime.num_episodes,
-                StartDate = anime.start_date,
-                EndDate = anime.end_date,
+                //StartDate = anime.start_date,
+                //EndDate = anime.end_date,
                 Status = anime.status,
                 Source = anime.source,
                 AverageEpisodeDuration = anime.average_episode_duration,
@@ -66,6 +67,7 @@ public class MalController : ControllerBase {
             catch (Exception) {
                 // ignored
             }
+            
             _context.Add(series);
         }
         await _context.SaveChangesAsync();

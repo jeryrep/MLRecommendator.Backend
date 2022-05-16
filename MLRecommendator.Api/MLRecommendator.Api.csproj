@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MLRecommendator.Database\MLRecommendator.Database.csproj" />
+    <ProjectReference Include="..\MLRecommendator.Modeling\MLRecommendator.Modeling.csproj" />
   </ItemGroup>
 
 </Project>
