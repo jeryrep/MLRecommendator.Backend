@@ -25,7 +25,8 @@ public class MalController : ControllerBase {
     [HttpGet]
     public async Task<ActionResult> Get() {
         var message = await _client.GetAsync("anime/ranking?ranking_type=all&limit=500&fields=id,title,start_date,end_date,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,status,genres,num_episodes,source,average_episode_duration,rating,studios&offset=4000");
-        if (!message.IsSuccessStatusCode) return BadRequest();
+        if (!message.IsSuccessStatusCode) 
+            return BadRequest();
         var content = await message.Content.ReadAsStringAsync();
         dynamic json = JsonConvert.DeserializeObject(content)!;
         var data = json.data;
@@ -81,5 +82,27 @@ public class MalController : ControllerBase {
         if (message.IsSuccessStatusCode)
             return Ok(message.Content.ReadAsStringAsync().Result);
         return BadRequest();
+    }
+
+    //GET api/Mal/5
+    [HttpGet("User/{username}")]
+    public async Task<ActionResult> GetUser(string username) {
+        var message = await _client.GetAsync($"users/{username}/animelist?fields=list_status&limit=1000");
+        if (!message.IsSuccessStatusCode) return BadRequest();
+        var content = await message.Content.ReadAsStringAsync();
+        dynamic json = JsonConvert.DeserializeObject(content)!;
+        var data = json.data;
+        foreach (var serie in data) {
+            if (serie.list_status.score == 0)
+                continue;
+            var userSerie = new UserSerie {
+                UserId = username,
+                Id = serie.node.id,
+                Score = serie.list_status.score
+            };
+            _context.Add(userSerie);
+        }
+        await _context.SaveChangesAsync();
+        return Ok(content);
     }
 }
