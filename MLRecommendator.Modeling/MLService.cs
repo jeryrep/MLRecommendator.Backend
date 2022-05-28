@@ -88,10 +88,21 @@ public class MlService {
         return mlContext.Regression.Evaluate(predictions, "UserScore");
     }
 
-    public object? Predict() {
+    public List<Prediction> Predict() {
         var mlContext = new MLContext();
         var pipeline = mlContext.Model.Load("model.zip", out var pipelineSchema);
-        var predictionEngine = mlContext.Model.CreatePredictionEngine<UserScoring, Prediction>(pipeline);
-        return predictionEngine.Predict(_dbContext.UserScorings.First(x => x.Id == 37095));
+        var predictionEngine = mlContext.Model.CreatePredictionEngine<Anime, Prediction>(pipeline);
+        var predictions = _dbContext.Animes
+            .AsEnumerable()
+            .Where(x => !_dbContext.UserScorings.Any(y => y.Id == x.Id))
+            .Select(x => predictionEngine.Predict(x))
+            .Select(x => new Prediction {
+                Id = x.Id,
+                PredictedScore = x.PredictedScore * _dbContext.Animes.First(y => y.Id == x.Id).Mean
+            })
+            .OrderByDescending(x => x.PredictedScore)
+            .Take(10)
+            .ToList();
+        return predictions;
     }
 }
