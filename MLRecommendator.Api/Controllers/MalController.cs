@@ -24,7 +24,7 @@ public class MalController : ControllerBase {
     // GET: api/Mal
     [HttpGet]
     public async Task<ActionResult> Get() {
-        var message = await _client.GetAsync("anime/ranking?ranking_type=all&limit=500&fields=id,title,start_date,end_date,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,status,genres,num_episodes,source,average_episode_duration,rating,studios&offset=4000");
+        var message = await _client.GetAsync("anime/ranking?ranking_type=all&limit=500&fields=id,title,start_date,end_date,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,status,genres,num_episodes,source,average_episode_duration,rating,studios&offset=2501");
         if (!message.IsSuccessStatusCode) 
             return BadRequest();
         var content = await message.Content.ReadAsStringAsync();

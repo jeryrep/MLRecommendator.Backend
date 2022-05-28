@@ -2,6 +2,7 @@
 using MLRecommendator.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MLRecommendator.Database.Migrations
 {
     [DbContext(typeof(MalContext))]
-    partial class MalContextModelSnapshot : ModelSnapshot
+    [Migration("20220528161417_NewTable")]
+    partial class NewTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.5");
@@ -297,7 +299,7 @@ namespace MLRecommendator.Database.Migrations
                     b.ToTable("Animes");
                 });
 
-            modelBuilder.Entity("MLRecommendator.Database.Models.AnimePrediction", b =>
+            modelBuilder.Entity("MLRecommendator.Database.Models.UserScoring", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -520,251 +522,6 @@ namespace MLRecommendator.Database.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<float>("TimeTravel")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("UserScore")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Vampire")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("VideoGame")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("VisualArts")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Workplace")
-                        .HasColumnType("REAL");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AnimePredictions");
-                });
-
-            modelBuilder.Entity("MLRecommendator.Database.Models.UserScoring", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<float>("Action")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("AdultCast")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Adventure")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Anthropomorphic")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("AvantGarde")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("AwardWinning")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("BoysLove")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("CGDCT")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Childcare")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("CombatSports")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Comedy")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Crossdressing")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Delinquents")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Detective")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Drama")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Ecchi")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Educational")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Erotica")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Fantasy")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("GagHumor")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("GirlsLove")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Gore")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Gourmet")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Harem")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Hentai")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("HighStakesGame")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Historical")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Horror")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("IdolsFemale")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("IdolsMale")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Isekai")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Iyashikei")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Josei")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Kids")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("LovePolygon")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("MagicalSexShift")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("MahouShoujo")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("MartialArts")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Mecha")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Medical")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Military")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Music")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Mystery")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Mythology")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("OrganizedCrime")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("OtakuCulture")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Parody")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("PerformingArts")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Pets")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Psychological")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Racing")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Reincarnation")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("ReverseHarem")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Romance")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("RomanticSubtext")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Samurai")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("School")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("SciFi")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Seinen")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Shoujo")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Shounen")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Showbiz")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("SliceOfLife")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Space")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Sports")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("StrategyGame")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("SuperPower")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Supernatural")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Survival")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("Suspense")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("TeamSports")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("TimeTravel")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("UserScore")
                         .HasColumnType("REAL");
 
                     b.Property<float>("Vampire")
