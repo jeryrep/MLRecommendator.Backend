@@ -75,20 +75,12 @@ public class MalController : ControllerBase {
         return Ok(content);
     }
 
-    // GET api/Mal/5
-    [HttpGet("{id}")]
-    public async Task<ActionResult> Get(int id) {
-        var message = await _client.GetAsync($"anime/{id}?fields=id,title,start_date,end_date,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,status,genres,num_episodes,source,average_episode_duration,rating");
-        if (message.IsSuccessStatusCode)
-            return Ok(message.Content.ReadAsStringAsync().Result);
-        return BadRequest();
-    }
-
     //GET api/Mal/5
     [HttpGet("User/{username}")]
     public async Task<ActionResult> GetUser(string username) {
         var message = await _client.GetAsync($"users/{username}/animelist?fields=list_status&limit=1000");
         if (!message.IsSuccessStatusCode) return BadRequest();
+        _context.UserSeries.RemoveRange(_context.UserSeries);
         var content = await message.Content.ReadAsStringAsync();
         dynamic json = JsonConvert.DeserializeObject(content)!;
         var data = json.data;

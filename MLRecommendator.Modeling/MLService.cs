@@ -94,7 +94,7 @@ public class MlService {
         var predictionEngine = mlContext.Model.CreatePredictionEngine<Anime, Prediction>(pipeline);
         var predictions = _dbContext.Animes
             .AsEnumerable()
-            .Where(x => !_dbContext.UserScorings.Any(y => y.Id == x.Id))
+            .Where(x => !_dbContext.UserSeries.Any(y => y.Id == x.Id))
             .Select(x => predictionEngine.Predict(x))
             .Select(x => new Prediction {
                 Id = x.Id,

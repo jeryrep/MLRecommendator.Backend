@@ -17,19 +17,12 @@ public class ModelController : ControllerBase
         _mlService = service;
         _context = context;
     }
-    // GET: api/<ModelController>
-    [HttpGet]
-    [Route("/datasetModel")]
-    public IActionResult Get() {
-        return Ok(_mlService.DatasetModel());
-    }
 
-    // GET api/<ModelController>/5
     [HttpGet]
     [Route("/userModel")]
     public async Task<IActionResult> GetUserModel()
     {
-        if (_context.UserScorings.Any()) return Ok(_mlService.UserModel());
+        _context.UserScorings.RemoveRange(_context.UserScorings);
         foreach (var userSeries in _context.UserSeries)
         {
             var anime = _context.Animes.FirstOrDefault(x => userSeries.Id == x.Id);
@@ -126,17 +119,5 @@ public class ModelController : ControllerBase
     [Route("/Predict")]
     public IActionResult GetPredictions() {
         return Ok(_mlService.Predict());
-    }
-
-    // PUT api/<ModelController>/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
-    {
-    }
-
-    // DELETE api/<ModelController>/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
-    {
     }
 }
