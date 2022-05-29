@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MLRecommendator.Database;
 using MLRecommendator.Database.Models;
@@ -22,9 +23,10 @@ public class MalController : ControllerBase {
         _context = context;
     }
     // GET: api/Mal
-    [HttpGet]
+    [HttpPost]
+    [AllowAnonymous]
     public async Task<ActionResult> Get() {
-        var message = await _client.GetAsync("anime/ranking?ranking_type=all&limit=500&fields=id,title,start_date,end_date,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,status,genres,num_episodes,source,average_episode_duration,rating,studios&offset=2501");
+        var message = await _client.GetAsync("anime/ranking?ranking_type=all&limit=500&fields=id,title,start_date,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,status,genres,num_episodes,synopsis,source,average_episode_duration,rating,studios&offset=1500");
         if (!message.IsSuccessStatusCode) 
             return BadRequest();
         var content = await message.Content.ReadAsStringAsync();
@@ -43,8 +45,9 @@ public class MalController : ControllerBase {
                 UsersScoringNumber = anime.num_scoring_users,
                 Nsfw = anime.nsfw,
                 EpisodeNumber = anime.num_episodes,
-                //StartDate = anime.start_date,
-                //EndDate = anime.end_date,
+                ImageUrl = anime.main_picture.large,
+                Synopsis = anime.synopsis,
+                StartDate = anime.start_date,
                 Status = anime.status,
                 Source = anime.source,
                 AverageEpisodeDuration = anime.average_episode_duration,
@@ -72,21 +75,26 @@ public class MalController : ControllerBase {
             _context.Add(series);
         }
         await _context.SaveChangesAsync();
-        return Ok(content);
+        return Ok();
     }
 
     //GET api/Mal/5
-    [HttpGet("User/{username}")]
+    [HttpPost("User/{username}")]
+    [AllowAnonymous]
     public async Task<ActionResult> GetUser(string username) {
         var message = await _client.GetAsync($"users/{username}/animelist?fields=list_status&limit=1000");
-        if (!message.IsSuccessStatusCode) return BadRequest();
-        _context.UserSeries.RemoveRange(_context.UserSeries);
+        if (!message.IsSuccessStatusCode) return BadRequest("Error in fetching data");
+        try {
+            _context.UserSeries.RemoveRange(_context.UserSeries);
+        }
+        catch (Exception) {
+            // ignored
+        }
+
         var content = await message.Content.ReadAsStringAsync();
         dynamic json = JsonConvert.DeserializeObject(content)!;
         var data = json.data;
         foreach (var serie in data) {
-            if (serie.list_status.score == 0)
-                continue;
             var userSerie = new UserSerie {
                 UserId = username,
                 Id = serie.node.id,
@@ -95,6 +103,6 @@ public class MalController : ControllerBase {
             _context.Add(userSerie);
         }
         await _context.SaveChangesAsync();
-        return Ok(content);
+        return Ok("User info uploaded");
     }
 }

@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MLRecommendator.Database;
 using MLRecommendator.Database.Models;
 using MLRecommendator.Modeling;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MLRecommendator.Api.Controllers; 
 
@@ -18,15 +17,22 @@ public class ModelController : ControllerBase
         _context = context;
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("/userModel")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetUserModel()
     {
-        _context.UserScorings.RemoveRange(_context.UserScorings);
+        try {
+            _context.UserScorings.RemoveRange(_context.UserScorings);
+        }
+        catch (Exception) {
+            // ignored
+        }
+
         foreach (var userSeries in _context.UserSeries)
         {
             var anime = _context.Animes.FirstOrDefault(x => userSeries.Id == x.Id);
-            if (anime == null) {
+            if (anime == null || userSeries.Score == 0) {
                 continue;
             }
             _context.UserScorings.Add(new UserScoring

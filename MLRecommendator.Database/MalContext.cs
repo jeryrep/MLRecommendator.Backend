@@ -7,7 +7,6 @@ public class MalContext : DbContext {
     public DbSet<Anime> Animes { get; set; }
     public DbSet<UserSerie> UserSeries { get; set; }
     public DbSet<UserScoring> UserScorings { get; set; }
-    public DbSet<AnimePrediction> AnimePredictions { get; set; }
     public string DbPath { get; }
     public MalContext() {
         DbPath = Path.Join(Environment.CurrentDirectory, "..\\MLRecommendator.Api\\mal.db");

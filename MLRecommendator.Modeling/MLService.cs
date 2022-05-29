@@ -88,7 +88,7 @@ public class MlService {
         return mlContext.Regression.Evaluate(predictions, "UserScore");
     }
 
-    public List<Prediction> Predict() {
+    public List<Summary> Predict() {
         var mlContext = new MLContext();
         var pipeline = mlContext.Model.Load("model.zip", out var pipelineSchema);
         var predictionEngine = mlContext.Model.CreatePredictionEngine<Anime, Prediction>(pipeline);
@@ -96,9 +96,17 @@ public class MlService {
             .AsEnumerable()
             .Where(x => !_dbContext.UserSeries.Any(y => y.Id == x.Id))
             .Select(x => predictionEngine.Predict(x))
-            .Select(x => new Prediction {
+            .Select(x => new Summary {
                 Id = x.Id,
-                PredictedScore = x.PredictedScore * _dbContext.Animes.First(y => y.Id == x.Id).Mean
+                Name = _dbContext.Animes.First(y => y.Id == x.Id).Title,
+                Url = $"https://myanimelist.net/anime/{x.Id}/",
+                Description = _dbContext.Animes.First(y => y.Id == x.Id).Synopsis,
+                ImageUrl = _dbContext.Animes.First(y => y.Id == x.Id).ImageUrl,
+                StartDate = _dbContext.Animes.First(y => y.Id == x.Id).StartDate,
+                Genres = _dbContext.Animes.First(y => y.Id == x.Id).Genres!.Split("|"),
+                PredictedScore = x.PredictedScore *
+                                 _dbContext.Animes.First(y => y.Id == x.Id)
+                                     .Mean
             })
             .OrderByDescending(x => x.PredictedScore)
             .Take(10)

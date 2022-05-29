@@ -9,6 +9,9 @@ public class Anime {
     public uint UsersNumber { get; set; }
     public uint UsersScoringNumber { get; set; }
     public string? Nsfw { get; set; }
+    public string? StartDate { get; set; }
+    public string? ImageUrl { get; set; }
+    public string? Synopsis { get; set; }
     private string? _genres;
     public string? Genres {
         get => _genres;
