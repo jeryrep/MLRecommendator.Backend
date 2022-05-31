@@ -17,7 +17,7 @@ public class ModelController : ControllerBase
         _context = context;
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("/userModel")]
     [AllowAnonymous]
     public async Task<IActionResult> GetUserModel()
@@ -118,7 +118,8 @@ public class ModelController : ControllerBase
             });
         }
         await _context.SaveChangesAsync();
-        return Ok(_mlService.UserModel());
+        return Ok();
+        //return Ok(_mlService.UserModel());
     }
 
     [HttpGet]
