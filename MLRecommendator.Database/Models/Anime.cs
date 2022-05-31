@@ -1,7 +1,9 @@
-﻿namespace MLRecommendator.Database.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MLRecommendator.Database.Models;
 public class Anime {
-    
-    public uint Id { get; set; }
+    [Key]
+    public uint SeriesId { get; set; }
     public string? Title { get; set; }
     public float Mean { get; set; }
     public uint Rank { get; set; }

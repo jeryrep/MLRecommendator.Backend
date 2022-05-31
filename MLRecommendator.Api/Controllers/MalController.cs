@@ -2,6 +2,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MLRecommendator.Database;
 using MLRecommendator.Database.Models;
 using MLRecommendator.Modeling;
@@ -26,11 +27,11 @@ public class MalController : ControllerBase {
         _context = context;
         _service = service;
     }
-    // GET: api/Mal
+
     [HttpPost]
     [AllowAnonymous]
-    public async Task<ActionResult> Get() {
-        var message = await _client.GetAsync("anime/ranking?ranking_type=all&limit=500&fields=id,title,start_date,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,status,genres,num_episodes,synopsis,source,average_episode_duration,rating,studios&offset=1500");
+    public async Task<ActionResult> Get(int offset) {
+        var message = await _client.GetAsync($"anime/ranking?ranking_type=all&limit=500&fields=id,title,start_date,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,status,genres,num_episodes,synopsis,source,average_episode_duration,rating,studios&offset={offset}");
         if (!message.IsSuccessStatusCode) 
             return BadRequest();
         var content = await message.Content.ReadAsStringAsync();
@@ -40,7 +41,7 @@ public class MalController : ControllerBase {
             var anime = node.node;
             if (anime.genres == null) continue;
             var series = new Anime {
-                Id = anime.id,
+                SeriesId = anime.id,
                 Title = anime.title,
                 Mean = anime.mean,
                 Rank = anime.rank,
@@ -82,52 +83,42 @@ public class MalController : ControllerBase {
         return Ok();
     }
 
-    //GET api/Mal/5
     [HttpGet("User/{username}")]
     [AllowAnonymous]
     public async Task<ActionResult> GetUser(string username) {
         var message = await _client.GetAsync($"users/{username}/animelist?fields=list_status&limit=1000");
-        if (!message.IsSuccessStatusCode) return BadRequest("Error in fetching data");
-        try {
-            _context.UserSeries.RemoveRange(_context.UserSeries);
-        }
-        catch (Exception) {
-            // ignored
-        }
-
+        if (!message.IsSuccessStatusCode) 
+            return BadRequest("Error in fetching data");
         var content = await message.Content.ReadAsStringAsync();
         dynamic json = JsonConvert.DeserializeObject(content)!;
         var data = json.data;
         foreach (var serie in data) {
             var userSerie = new UserSerie {
                 UserId = username,
-                Id = serie.node.id,
+                SeriesId = serie.node.id,
                 Score = serie.list_status.score
             };
-            _context.Add(userSerie);
+            if (_context.UserSeries.AnyAsync(x => x.SeriesId == userSerie.SeriesId && x.UserId == userSerie.UserId).Result)
+                _context.UserSeries.FirstAsync(x => x.SeriesId == userSerie.SeriesId && x.UserId == userSerie.UserId).Result.Score = userSerie.Score;
+            else
+                await _context.AddAsync(userSerie);
         }
         await _context.SaveChangesAsync();
-
-        try
-        {
-            _context.UserScorings.RemoveRange(_context.UserScorings);
-        }
-        catch (Exception)
-        {
-            // ignored
-        }
-
-        foreach (var userSeries in _context.UserSeries)
-        {
-            var anime = _context.Animes.FirstOrDefault(x => userSeries.Id == x.Id);
-            if (anime == null || userSeries.Score == 0)
-            {
+        var animes = _context.Animes.ToList();
+        var userScorings = _context.UserScorings.ToList();
+        var userSeries = _context.UserSeries.Where(x => x.UserId == username).ToList();
+        foreach (var serie in userSeries) {
+            var anime = animes.FirstOrDefault(x => serie.SeriesId == x.SeriesId);
+            if (anime == null || serie.Score == 0)
+                continue;
+            if (userScorings.Any(x => x.UserId == serie.UserId && x.SeriesId == serie.SeriesId)) {
+                _context.UserScorings.First(x => x.SeriesId == serie.SeriesId && x.UserId == serie.UserId).UserScore = serie.Score;
                 continue;
             }
-            _context.UserScorings.Add(new UserScoring
-            {
-                Id = anime.Id,
-                UserScore = userSeries.Score,
+            _context.UserScorings.Add(new UserScoring {
+                UserId = serie.UserId,
+                SeriesId = anime.SeriesId,
+                UserScore = serie.Score,
                 Action = anime.Action,
                 Adventure = anime.Adventure,
                 AvantGarde = anime.AvantGarde,
@@ -207,7 +198,6 @@ public class MalController : ControllerBase {
             });
         }
         await _context.SaveChangesAsync();
-        _service.UserModel();
-        return Ok(_service.Predict());
+        return Ok(_service.UserModel(username).Result);
     }
 }

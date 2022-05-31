@@ -1,9 +1,8 @@
-﻿using Microsoft.ML.Data;
-
-namespace MLRecommendator.Database.Models; 
-
+﻿namespace MLRecommendator.Database.Models;
 public class UserScoring {
-    public uint Id { get; set; }
+    public int Id { get; set; }
+    public string? UserId { get; set; }
+    public uint SeriesId { get; set; }
     public float UserScore { get; set; }
     public float Action { get; set; }
     public float Adventure { get; set; }

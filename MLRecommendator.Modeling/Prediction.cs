@@ -3,7 +3,7 @@
 namespace MLRecommendator.Modeling; 
 
 public class Prediction {
-    public uint Id { get; set; }
+    public uint SeriesId { get; set; }
     [ColumnName("Score")]
     public float PredictedScore { get; set; }
 }

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using MLRecommendator.Database;
 using MLRecommendator.Modeling;
 
@@ -9,7 +10,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<MalContext>();
+builder.Services.AddEntityFrameworkNpgsql().AddDbContext<MalContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Postgresql")));
 builder.Services.AddScoped<MlService>();
 
 var app = builder.Build();
